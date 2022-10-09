@@ -288,6 +288,7 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+        self.goal = [1,1,1,1]
 
     def getStartState(self):
         """
@@ -295,6 +296,8 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
+        return [self.startingPosition,[0,0,0,0]]
+        
         util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -302,6 +305,11 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
+        if state[1] == self.goal:
+            return True
+
+        return False
+
         util.raiseNotDefined()
 
     def getSuccessors(self, state):
@@ -325,6 +333,22 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+
+            x,y = state[0]
+            visitedStates = state[1]
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            copyOfVisitedStates = visitedStates.copy()
+            if not self.walls[nextx][nexty]:
+
+                xy = (nextx, nexty)
+
+                for i in range(4):
+                    if xy == self.corners[i]:
+                        copyOfVisitedStates[i] = 1
+    
+                nextState = [(nextx, nexty),copyOfVisitedStates]
+                successors.append( ( nextState, action, 0) )
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -360,6 +384,26 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
+
+    curLoc = state[0]
+    visitedCorners = state[1].copy()
+    finalCost = 0
+
+    #Find the closest not visited corner and add its manhatten distance to the finalCost
+    while not visitedCorners == [1,1,1,1]:
+        cost = 999999
+        for i in range(4):
+            if visitedCorners[i] == 0:
+                x = util.manhattanDistance(curLoc,corners[i])
+                if x < cost:
+                    cost = x
+                    closestCorner = i
+        finalCost = finalCost + cost
+        curLoc = corners[closestCorner]
+        visitedCorners[closestCorner] = 1
+    
+    return finalCost
+
     return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):

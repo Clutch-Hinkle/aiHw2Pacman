@@ -129,8 +129,6 @@ def depthFirstSearch(problem):
         
 
     
-
-    print(solution)
     
     return solution
 
@@ -139,43 +137,71 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+    # q = util.Queue()
+    # solutionQ = util.Queue()
+    # from game import Directions
+    # n = Directions.NORTH
+    # s = Directions.SOUTH
+    # e = Directions.EAST
+    # w = Directions.WEST
+
+    # currentState = problem.getStartState()
+    # start = problem.getStartState()
+    # visitedStates = [currentState]
+    # solution = list()
+    # solutionQ.push(solution)
+
+    # while not problem.isGoalState(currentState):
+    #     for x in problem.getSuccessors(currentState):
+    #         if x[0] not in visitedStates:
+    #             q.push(x)
+    #             tmpSol = solution.copy()
+    #             tmpSol.append(x[1])
+    #             visitedStates.append(x[0])
+    #             solutionQ.push(tmpSol)
+
+
+    #     if q.isEmpty():
+    #         print("No more moves in the queue")
+    #         break
+
+    #     successor = q.pop()
+    #     solution = solutionQ.pop()
+    #     currentState = successor[0]
+
+
+
+    # print("Number of moves in solution: ",len(solution))
+
     q = util.Queue()
-    from game import Directions
-    n = Directions.NORTH
-    s = Directions.SOUTH
-    e = Directions.EAST
-    w = Directions.WEST
+    solQ = util.Queue()
 
-    currentState = problem.getStartState()
     start = problem.getStartState()
-    visitedStates = {currentState}
-    path = {}
-    solution = list()
+    visitedStates = list()
+    sol = list()
 
-    while not problem.isGoalState(currentState):
-        for x in problem.getSuccessors(currentState):
-            if x[0] not in visitedStates:
-                q.push(x)
-                visitedStates.add(x[0])
-                path[x[0]] = (currentState,[x[1]])
+    q.push(start)
+    solQ.push(sol)
 
-
+    while True:
         if q.isEmpty():
-            print("No more moves in the queue")
+            print('no solution was found')
+            return
+
+        currentState = q.pop()
+        solution = solQ.pop()
+
+        if problem.isGoalState(currentState):
             break
 
-        successor = q.pop()
-        currentState = successor[0]
+        if currentState not in visitedStates:
+            visitedStates.append(currentState)
+            for x in problem.getSuccessors(currentState):
+                q.push(x[0])
+                tmpSol = solution.copy()
+                tmpSol.append(x[1])
+                solQ.push(tmpSol)
 
-
-    while currentState != start:
-        solution.append(path[currentState][1][0])
-        currentState = path[currentState][0]
-
-    solution.reverse()
-    print("Number of moves in solution: ",len(solution))
-
-    
     return solution
 
     util.raiseNotDefined()
