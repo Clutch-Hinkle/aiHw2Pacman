@@ -498,6 +498,16 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
+    foodPos = foodGrid.asList()
+    if len(foodPos) == 0:
+        return 0
+    cost = 999999
+    for foodLoc in foodPos:
+        currentCost = mazeDistance(position,foodLoc,problem.startingGameState)
+        if currentCost < cost:
+            cost = currentCost
+    return cost
+
     return 0
 
 class ClosestDotSearchAgent(SearchAgent):
